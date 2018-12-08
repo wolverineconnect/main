@@ -1,0 +1,111 @@
+<!doctype html>
+<script src="./js/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src="./js/main.js"></script>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wolverine Connect: Login</title>
+<link href="./css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#100455">
+	<h1><img src="./img/logo.jpg" width="100" height="100" alt="">   UM-Flint Community </h1>
+	<h3><a  class="h3" > <span class="h3">Login </span></a></h3>
+<form>
+  <div class="container" >
+    <p class = "textcenter"> <label for="uname"> <b class="mainheader">Username</b></label>
+    <p class = "textcenter"> <input type="text" id="username" placeholder="Enter Username" name="uname" required>
+    <p class = "textcenter"> <label for="psw"><b class="mainheader">Password</b></label>
+    <p class = "textcenter"><input type="password" id="password" placeholder="Enter Password" name="psw" required>
+    <p class = "textcenter"><button type="button" id="sub">Login</button>
+    <p class = "textcenter"> <label class="bodytext">
+    <input type="checkbox" id="rememberme" checked="checked" name="remember"> Remember me
+    </label><br>
+    <a type="button" href="index.html">
+    <button type="button" class="cancelbtn" id="cancel">Cancel</button></a><br><br>
+    Forgot <a href="https://go.umflint.edu/lan" target="_blank">password?</a>
+  </div>
+  <p></p>
+</form>
+<script>
+  // submit button click
+  $(document).on('click','#sub',function(e){
+  // validate fields
+  if (document.getElementById('username').value != ""){
+      var username = document.getElementById('username').value;
+  }
+  else {
+      alert('Please enter your username.');
+      return;}
+  if (document.getElementById('password').value != ""){
+      var pword = document.getElementById('password').value;
+  }
+  else {
+      alert('Please enter your password.');
+      return;}
+  if (alphanumeric(username) == true) {}
+  else {
+    alert('Username must contain only letters and numbers.');
+    return;
+  }
+  // get snapshot of user
+  firebase.database().ref(`users/${username}`).once("value", snapshot => {
+    // check for existing user
+    if (snapshot.exists()){
+      // set reference 
+      var ref = firebase.database().ref().child('users/');
+      // get snapshot
+      ref.orderByChild("username").equalTo(username).on("child_added", function(snapshot) {
+      // check username, password
+      if (username == snapshot.key && pword == snapshot.child("password").val()) {
+        // set sessionStorage items
+        sessionStorage.setItem('liusername',snapshot.key);
+        sessionStorage.setItem('lifirstname',snapshot.child("namefirst").val());
+        sessionStorage.setItem('lilastname',snapshot.child("namelast").val());
+        sessionStorage.setItem('litype',snapshot.child("type").val());
+        // check 'remember me' checkbox
+        if(document.getElementById('rememberme').checked == true){
+          // set localStorage item
+          localStorage.setItem("username", snapshot.key);
+        }
+        else {
+          // remove localStorage item
+          localStorage.removeItem("username");
+        }
+        // forward to site
+        window.location.assign("home.html")
+        }
+      else {
+          alert('Invalid username or password.');
+      }
+  });
+     }
+     else {
+       console.log('DNE');
+       alert('Invalid username or password.');
+       return;
+     }
+ });
+});
+// ready
+$(document).ready(function() {
+    fillByMemory()
+});
+// function checks for remembered username, fills login box
+function fillByMemory(){
+    if(!!localStorage.getItem("username"))
+        $('#username').val(localStorage.getItem("username"));
+}
+// Execute a function when the user releases a key on the keyboard
+document.getElementById('password').addEventListener("keyup", function(event) {
+  // Cancel the default action, if needed
+  event.preventDefault();
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    // Trigger the button element with a click
+    document.getElementById("sub").click();
+  }
+});
+</script>
+</body>
+</html>

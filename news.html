@@ -1,0 +1,114 @@
+<!doctype html>
+<script src='./js/jquery.min.js'></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src='./js/main.js'></script>
+<script src='./js/alerts.js'></script>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wolverine Connect: News</title>
+<link href="./css/main.css" rel="stylesheet" type="text/css">
+<link href="./css/news.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#100455">
+  <div id="mySidenav" class="sidenav">
+      <div id="fullname"></div><a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="home.html">Home</a>
+      <a href="https://my.umflint.edu/" target="_blank">My UM-Flint</a>
+      <a href="map.html">Campus Map</a>
+      <a href="calendar.html">Calendar</a>
+      <div class='noguest' style='display: none'><a href="chatter.html">Chatter</a></div>
+      <div class='noguest' style='display: none'><a href="messages.html">Messages</a></div>
+      <a href="news.html">News</a>
+      <a href="securityalerts.html">Security Alerts</a>
+      <div class='noguest' style='display: none'><a href="profile.html">My Profile</a></div>
+      <br>
+      <a href="index.html">Logout</a>
+      <br>
+      <a href="tel:+18107623333"><img src="./img/sos.png" height="60" width="60"></a>
+    </div>
+  <div id="main">
+    <div class="alert" id='secalertbox'>
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+    <div id="secalerttitle"></div>
+  </div>
+  <br>
+  <span class = "mainheader" style="font-size:30px; cursor:pointer" onclick="toggleNav()">&#9776;</span>
+  <h1><img src="./img/logo.jpg" width="100" height="100" alt="">  Wolverine Connect</h1>
+  <h3>Campus News</h3>
+  <div class='container' id='adminonly' style="display: none">
+      <p class = "textcenter"> <label for="type"><b class="mainheader">News Title</b></label>
+        <p class = "textcenter"><input type="text" id="newstitle" placeholder="Enter Title" name="type" required>
+        <p class = "textcenter"> <label for="enabled"><b class="mainheader">News Description</b></label>
+        <p class = "textcenter"><input type="text" id="newsdescription" placeholder="Enter Description" name="enabled" required>
+        <p class = "textcenter"><button type="submit" id="newsinput">Submit</button>
+  </div>
+  <div id="newsposts"></div>
+</div>
+<script>
+// ready
+$(document).ready(function(e){
+  // write fullname to sidnav
+  document.getElementById('fullname').innerHTML = "<p>" +sessionStorage.getItem('lifirstname') + " " + sessionStorage.getItem('lilastname') + "</p>";
+  // check permissions
+  permCheck();
+  // admin account type check
+  if (sessionStorage.getItem('litype') == "admin") {
+    console.log('displaying');
+    document.getElementById('adminonly').style.display = "block";
+  }
+  //set reference to security table, order by key, limit to 10
+  var recentPostsRef = firebase.database().ref('news/').orderByKey().limitToLast(10);
+  //for each child item added to reference (10 children)
+  recentPostsRef.on('child_added', function(data) {
+    var deleter = " ";
+      if (sessionStorage.getItem('litype') != "guest" && sessionStorage.getItem('litype') != "student" && sessionStorage.getItem('litype') != null) {
+        console.log(sessionStorage.getItem('litype'));
+        deleter = "<br><br><div id='delentry' class='delentry' style='display: block;' value='" + data.child("date").val() + "-" + data.child("time").val() + "'><a href='#'>Delete</a></div>";
+      }
+    //set output string to variable (output template)
+    htmlInsert = "<div class='divTable messageTable'><div class='divTableHeading'><div class='divTableRow'><div class='divTableHead'>" + data.child("title").val() + " - " + data.child("date").val() + " " + data.child("time").val() + "</div></div></div><div class='divTableBody'><div class='divTableRow'><div class='divTableCell'>" + data.child("description").val() + deleter +  "</div></div></div>"
+    document.getElementById('newsposts').insertAdjacentHTML ('afterend', htmlInsert);
+  });
+});
+// on delete click event
+$(document).on('click','#delentry',function(e){
+  // select element
+  selected = $(this).attr('value');
+  // reference entry
+  firebase.database().ref(`news/${selected}`).once("value", snapshot => {
+    // check exists
+    if (snapshot.exists()){
+      // remove entry
+      firebase.database().ref(`news/${selected}`).remove();
+    }
+  });
+});
+// function to push news item
+function pushNews() {
+    var currentdate = new Date();
+    var datetime = currentdate.getFullYear() + "-"
+                  + (currentdate.getMonth()+1)  + "-" 
+                  + currentdate.getDate() + "-"  
+                  + addZero(currentdate.getHours()) + ":"  
+                  + addZero(currentdate.getMinutes()) + ":" 
+                  + addZero(currentdate.getSeconds());
+  firebase.database().ref('news/' + datetime).set({
+    date: currentdate.getFullYear() + "-" + (currentdate.getMonth()+1)  + "-" + currentdate.getDate(),
+    time: addZero(currentdate.getHours()) + ":" + addZero(currentdate.getMinutes()) + ":" + addZero(currentdate.getSeconds()),
+    title: document.getElementById('newstitle').value,
+    description: document.getElementById('newsdescription').value,
+  });
+};
+// function to fix date/time
+function addZero(i) {
+  if (i < 10) {
+      i = "0" + i;
+  }
+  return i;
+}
+// newsinput click handler
+$(document).on('click','#newsinput',function(e){pushNews()});
+</script>
+</body>
+</html>

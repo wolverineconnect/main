@@ -1,0 +1,36 @@
+<!doctype html>
+<script src="js/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src="js/main.js"></script>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wolverine Connect</title>
+	<link href="./css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#100455">
+<script>
+	// set guest information on guest login
+	$(document).on('click','#guestlogin',function(e){
+        sessionStorage.setItem('liusername','guest');
+        sessionStorage.setItem('lifirstname','Guest');
+		sessionStorage.setItem('lilastname','account');
+		sessionStorage.setItem('litype','guest');
+		window.location.assign("home.html")
+	});
+</script>
+	<h1 class="textcenter"><img src="./img/um.png" width="150" height="150" alt="University of Michigan"> </h1>
+	<h1><a class="h1" > <span class="h1">Wolverine Connect </span></a></h1>
+    <p class="textcenter"><span class="mainheader">Students/Faculty/Staff</span></p>	
+	<p class="textcenter"><a class="button"  href="login.html" type="button" value="Input Button">
+	<button class="button">Login</button> </a></p>
+    <p class="textcenter"> <span class="mainheader">Guest</span></p>
+	<p class = "textcenter"><a class="button" type="button">
+    <button type="button" class="button" id="guestlogin">Login</button></a>               
+	<p class="textcenter"></p>
+	<p class="textcenter"></p> 
+	<p class="textcenter"><span class="mainheader">Need An Account?</span></p>
+	<p class="textcenter"><a class="button" href="input.html" type="button" value="SignUpButton">
+	<button class="button">SignUp</button></a></p>
+</body>
+</html>

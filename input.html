@@ -1,0 +1,84 @@
+<!doctype html>
+<script src="./js/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src="./js/main.js"></script>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Submit Accounts</title>
+  <link href="./css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#100455">
+  <div class="container" >
+      <p class = "textcenter"> <label for="uname"> <b class="mainheader">Username</b></label>
+      <p class = "textcenter"> <input type="text" id="username" placeholder="Enter Username" name="uname" required>
+      <p class = "textcenter"> <label for="psw"><b class="mainheader">Password</b></label>
+      <p class = "textcenter"><input type="password" id="password" placeholder="Enter Password" name="psw" required>
+      <p class = "textcenter"> <label for="umid"><b class="mainheader">UMID</b></label>
+      <p class = "textcenter"><input type="text" id="umid" placeholder="Enter UMID" name="umid" required>            
+      <p class = "textcenter"> <label for="namefirst"><b class="mainheader">First Name</b></label>
+      <p class = "textcenter"><input type="text" id="namefirst" placeholder="Enter First Name" name="namefirst" required>
+      <p class = "textcenter"> <label for="namelast"><b class="mainheader">Last Name</b></label>
+      <p class = "textcenter"><input type="text" id="namelast" placeholder="Enter Last Name" name="namelast" required>
+      <p class = "textcenter"><button type="submit" id="input">Submit</button>
+      <label class="bodytext"></label>
+  </div>
+<script>
+// on submit click
+$(document).on('click','#input',function(e){
+  // get fields to vars
+  var username = document.getElementById('username').value;
+  var pword = document.getElementById('password').value;
+  var umid = document.getElementById('umid').value;
+  var namefirst = document.getElementById('namefirst').value;
+  var namelast = document.getElementById('namelast').value;
+  // check for empty fields
+  if (username == "" || pword == "" || umid == "" || namefirst == "" || namelast == ""){
+    alert('Please fill out all fields.');
+  }
+  else {
+    if (numeric(umid) == true) {
+    firebase.database().ref(`users/${username}`).once("value", snapshot => {
+      // check for existing username
+      if (snapshot.exists()){
+        alert('Error: username already exists.');
+      }
+      else {
+        // write entry
+        firebase.database().ref('users/' + username).set({
+        username: username,
+        password: pword,
+        umid: umid,
+        namefirst: namefirst,
+        namelast: namelast,
+        type: "student",
+        enabled: "1"});
+        // put items in sessionStorage
+        sessionStorage.setItem('liusername', username);
+        sessionStorage.setItem('lifirstname', namefirst);
+        sessionStorage.setItem('lilastname', namelast);
+        sessionStorage.setItem('litype', "student");
+        // forward to home page
+        window.location.assign("home.html")
+      }
+      
+    });}
+    else {
+      alert('Your UMID must consist of only numbers.');
+    }
+  }
+});
+// block non-numerical input
+$('#umid').on('keypress', function(ev) {
+    var keyCode = window.event ? ev.keyCode : ev.which;
+    //codes for 0-9
+    if (keyCode < 48 || keyCode > 57) {
+        //codes for backspace, delete, enter
+        if (keyCode != 0 && keyCode != 8 && keyCode != 13 && !ev.ctrlKey) {
+            ev.preventDefault();
+        }
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+div.messageTableRecipient {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  border: 7px solid #BFC4C9;
+  background-color: #F2F9FF;
+  width: 90%;
+  text-align: right;
+  border-collapse: collapse;
+  float: left;
+}
+.divTable.messageTableRecipient .divTableCell, .divTable.messageTableRecipient .divTableHead {
+  border: 5px solid #BFC4C9;
+  padding: 5px 10px;
+}
+.divTable.messageTableRecipient .divTableBody .divTableCell {
+  font-size: 14px;
+  color: #333333;
+}
+.divTable.messageTableRecipient .divTableRow:nth-child(even) {
+  background: #D0E4F5;
+}
+.divTable.messageTableRecipient .divTableHeading {
+  background: #1137A8;
+  background: -moz-linear-gradient(top, #4c69be 0%, #284bb0 66%, #1137A8 100%);
+  background: -webkit-linear-gradient(top, #4c69be 0%, #284bb0 66%, #1137A8 100%);
+  background: linear-gradient(to bottom, #4c69be 0%, #284bb0 66%, #1137A8 100%);
+  border-bottom: 2px solid #444444;
+}
+.divTable.messageTableRecipient .divTableHeading .divTableHead {
+  font-size: 15px;
+  font-weight: bold;
+  color: #FFFFFF;
+  border-left: 2px solid #D0E4F5;
+}
+.divTable.messageTableRecipient .divTableHeading .divTableHead:first-child {
+  border-left: none;
+}
+
+.messageTableRecipient .tableFootStyle {
+  font-size: 14px;
+}
+.messageTableRecipient .tableFootStyle .links {
+	 text-align: right;
+}
+.messageTableRecipient .tableFootStyle .links a{
+  display: inline-block;
+  background: #1C6EA4;
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+.messageTableRecipient.outerTableFooter {
+  border-top: none;
+}
+.messageTableRecipient.outerTableFooter .tableFootStyle {
+  padding: 3px 5px; 
+}
+/* DivTable.com */
+.divTable{ display: table; }
+.divTableRow { display: table-row; }
+.divTableHeading { display: table-header-group;}
+.divTableCell, .divTableHead { display: table-cell;}
+.divTableHeading { display: table-header-group;}
+.divTableFoot { display: table-footer-group;}
+.divTableBody { display: table-row-group;}

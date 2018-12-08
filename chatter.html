@@ -1,0 +1,103 @@
+<!doctype html>
+<script src='./js/jquery.min.js'></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src='./js/main.js'></script>
+<script src='./js/alerts.js'></script>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wolverine Connect: Chatter</title>
+<link href="./css/chatter.css" rel="stylesheet" type="text/css">
+<link href="./css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#100455">
+    <div id="mySidenav" class="sidenav">
+        <div id="fullname"></div><a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="home.html">Home</a>
+        <a href="https://my.umflint.edu/" target="_blank">My UM-Flint</a>
+        <a href="map.html">Campus Map</a>
+        <a href="calendar.html">Calendar</a>
+        <div class='noguest' style='display: none'><a href="chatter.html">Chatter</a></div>
+        <div class='noguest' style='display: none'><a href="messages.html">Messages</a></div>
+        <a href="news.html">News</a>
+        <a href="securityalerts.html">Security Alerts</a>
+        <div class='noguest' style='display: none'><a href="profile.html">My Profile</a></div>
+        <br>
+        <a href="index.html">Logout</a>
+        <br>
+        <a href="tel:+18107623333"><img src="./img/sos.png" height="60" width="60"></a>
+    </div>
+    <div id="main">
+    <div class="alert" id='secalertbox'>
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+    <div id="secalerttitle"></div>
+  </div>
+  <br>
+  <span class = "mainheader" style="font-size:30px; cursor:pointer" onclick="toggleNav()">&#9776;</span>
+  <h1><img src="./img/logo.jpg" width="100" height="100" alt="">  Wolverine Connect</h1>
+  <h3>Chatter</h3>
+  <p class = "textcenter"><input type="text" id="cNewMessageBody" placeholder="Enter Message" name="mNewMessageBody" required></p>
+  <p class = "textcenter"><button type="submit" id="cNewMsgSubmit">Submit</button></p>
+  <div id="chatterfeed"></div>
+</div>
+</div>
+<script>
+// ready
+$(document).ready(function(e){
+    document.getElementById('fullname').innerHTML = "<p>" +sessionStorage.getItem('lifirstname') + " " + sessionStorage.getItem('lilastname') + "</p>";
+    // set reference to chatter table, order by key, limit to 10
+    var recentPostsRef = firebase.database().ref('chatter/').orderByKey().limitToLast(10);
+    // for each child item added to reference (10 children)
+        recentPostsRef.on('child_added', function(data) {
+            // deleter adds deletion code if applicable
+            var deleter = " ";
+            // check for guest/no account
+            if (sessionStorage.getItem('litype') != "guest" && sessionStorage.getItem('litype') != null) {
+                // check if message sender is current login
+                if (sessionStorage.getItem('liusername') == data.child('sender').val() || sessionStorage.getItem('litype') == "admin") {
+                    deleter = "<br><br><div id='delentry' class='delentry' style='display: block;' value='" + data.child('timedate').val() + "-" + data.child("sender").val() + "'><a href='#'>Delete</a></div>";
+                }
+            }
+        // set output string to variable (output template)
+        htmlInsert = "<div class='divTable messageTable'><div class='divTableHeading'><div class='divTableRow'><div class='divTableHead'><div id='chatter-sender'>" + data.child("sender").val() + " - " + data.child("timedate").val() + "</div></div></div></div><div class='divTableBody'><div class='divTableRow'><div class='divTableCell'><div id='chatter-message'>" + data.child("message").val() + deleter + "</div></div></div></div></div>";
+        // insert messages
+        document.getElementById('chatterfeed').insertAdjacentHTML ('afterbegin', htmlInsert);
+    });
+    // check permissions
+    permCheck();
+});
+// on delete click
+$(document).on('click','#delentry',function(e){
+    // set selection of element
+    selected = $(this).attr('value');
+    // look up element
+    firebase.database().ref(`chatter/${selected}`).once("value", snapshot => {
+        // check if entry exists
+        if (snapshot.exists()){
+            // remove element, notify user, reload page
+            firebase.database().ref(`chatter/${selected}`).remove();
+            alert('Message deleted.');
+            window.location.reload();
+        }
+    });
+});
+// grab session vars
+var username = sessionStorage.getItem('liusername');
+var firstname = sessionStorage.getItem('lifirstname');
+var lastname = sessionStorage.getItem('lilastname');
+// new chatter status on click
+$(document).on('click','#cNewMsgSubmit',function(e){
+    // get input to value
+    var msg = document.getElementById('cNewMessageBody').value;
+    // get reference to entry
+    var cref = firebase.database().ref().child('chatter/' + getCurrentDateTime() + '-' + username);
+    // write to entry
+    cref.set({
+      sender: username,
+      timedate: getCurrentDateTime(),
+      message: msg,
+    })
+});
+</script>
+</body>
+</html>

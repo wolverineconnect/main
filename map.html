@@ -1,0 +1,74 @@
+<!doctype html>
+<script src="./js/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src="./js/main.js"></script>
+<script src='./js/alerts.js'></script>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wolverine Connect: Map</title>
+<link href='./css/main.css' rel="stylesheet" type="text/css">
+<link href='./css/iframe.css' rel='stylesheet'/>
+</head>
+<body bgcolor="#100455">
+    <div id="mySidenav" class="sidenav">
+        <div id="fullname"></div><a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="home.html">Home</a>
+        <a href="https://my.umflint.edu/" target="_blank">My UM-Flint</a>
+        <a href="map.html">Campus Map</a>
+        <a href="calendar.html">Calendar</a>
+        <div class='noguest' style='display: none'><a href="chatter.html">Chatter</a></div>
+        <div class='noguest' style='display: none'><a href="messages.html">Messages</a></div>
+        <a href="news.html">News</a>
+        <a href="securityalerts.html">Security Alerts</a>
+        <div class='noguest' style='display: none'><a href="profile.html">My Profile</a></div>
+        <br>
+        <a href="index.html">Logout</a>
+        <br>
+        <a href="tel:+18107623333"><img src="./img/sos.png" height="60" width="60"></a>
+    </div>
+  <div id="main">
+    <div class="alert" id='secalertbox'>
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+    <div id="secalerttitle"></div>
+  </div>
+  <br>
+  <span class = "mainheader" style="font-size:30px; cursor:pointer" onclick="toggleNav()">&#9776;</span>
+  <h1><img src="./img/logo.jpg" width="100" height="100" alt="">  Wolverine Connect</h1>
+  <h3>Campus Map</h3>
+  <!-- map dropdown and iframe -->
+  <div style="text-align: center"><select id="selection" style="padding:12px 12px; margin:0 auto; display: table-caption; border: medium solid #ccc; box-sizing: border-box; -webkit-box-shadow: -7px 10px 23px 3px #000000; box-shadow: -7px 10px 23px 3px #000000">
+      <option id="msb" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=Murchie+Science+Building,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=Murchie+Science+Building,Flint+MI">Murchie Science Building</option>
+      <option id="dmfh" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=David+M+French+Hall,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=David+M+French+Hall,Flint+MI">David M. French Hall</option>
+      <option id="rivc" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=Riverfront+Center,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=Riverfront+Center,Flint+MI">Riverfront Center</option>
+      <option id="upav" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=University+Pavilion,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=David+M+University+Pavilion,Flint+MI">University Pavilion</option>
+      <option id="fwtl" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=Frances+Willson+Thompson+Library,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=Frances+Willson+Thompson+Library,Flint+MI">Frances Willson Thompson Library</option>
+      <option id="umft" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=UMFlint+Theatre,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=UMFlint+Theatre,Flint+MI">UM-Flint Theatre</option>
+      <option id="hmuc" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=Harding+Mott+University+Center,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=Harding+Mott+University+Center,Flint+MI">Harding Mott University Center</option>
+      <option id="recc" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=Recreation+Center,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=Recreation+Center,Flint+MI">Recreation Center</option>
+      <option id="wswb" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=William+S+White+Building,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=William+S+White+Building,Flint+MI">William S. White Building</option>
+      <option id="nbcn" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=Northbank+Center,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=Northbank+Center,Flint+MI">Northbank Center</option>
+      <option id="fsrh" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=First+Street+Residence+Hall,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=First+Street+Residence+Hall,Flint+MI">First Street Residence Hall</option>
+      <option id="hubb" value="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY&q=Hubbard+Building,Flint+MI&attribution_source=Google+Maps+Embed+API&attribution_web_url=http://www.umflint.edu/&attribution_ios_deep_link_id=comgooglemaps://?daddr=Hubbard+Building,Flint+MI">Hubbard Building</option>
+    </select></div><br>
+  <div id='iframe'><iframe frameborder="0" id="mapiframe" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBr33efeuTQYUnLqMKqjm8QPyHd_MS_sfY
+  &q=Murchie+Science+Building,Flint+MI
+  &attribution_source=Google+Maps+Embed+API
+  &attribution_web_url=http://www.umflint.edu/
+  &attribution_ios_deep_link_id=comgooglemaps://?daddr=Murchie+Science+Building,Flint+MI"></iframe></div><br>
+</div>
+<script>
+$(document).ready(function(e){
+  // write full name to panel
+  document.getElementById('fullname').innerHTML = "<p>" + sessionStorage.getItem('lifirstname') + " " + sessionStorage.getItem('lilastname') + "</p>";
+  // check permissions
+  permCheck();
+});
+// change map based on option
+var mapwriteout = document.getElementById('mapiframe');
+$('#selection').change(function() {
+    mapwriteout.src = $(this).children(":selected").attr("value");
+});
+</script>	
+</body>
+</html>

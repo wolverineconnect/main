@@ -1,0 +1,309 @@
+@charset "utf-8";
+blockquote p img {
+	background-clip: padding-box;
+	align-items: center;
+}
+
+body {
+    color: #FEFBFB;
+    background-image: url("../img/bg1.png");
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-attachment: fixed;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    color: #FEFBFB;
+    font-weight: bold;
+    font-size: 5em; /*orig:500%*/
+}
+.mainmenu {
+    text-align: center;
+    color: #FEFEFE;
+}
+h3 {
+	
+    text-align: center;
+    color: #FEFBFB;
+    font-weight: bold;
+    font-size: 3em; /*orig:300%*/
+}
+
+h5 {
+	
+    text-align: center;
+    color: #FEFBFB;
+    font-weight: bold;
+    font-size: 1.5em; /*orig:150%*/
+}
+
+body p img {
+}
+.bodytext   {
+    color: #FBFBFB;
+}
+
+body h2 {
+}
+.header {
+    color: #F9F9F9;
+}
+.mainheader {
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+	vertical-align: text-top;
+  
+}
+.textcenter {
+    text-align: center;
+    color: #FBFBFB;
+	/*display: inline-block;*/
+}
+.textright {
+    text-align: right;
+    
+}
+.sender {
+    text-align: right;
+	vertical-align: top;
+    color: #FBFBFB;
+	/*display: inline-block;*/
+}
+.textSender{
+	text-align: right;
+	/*background-color: yellow;
+	color:blue; */
+	}
+
+.mdialogScroll{
+	overflow: auto;
+	/*overflow:hidden;*/
+}
+
+.mainmenu {
+    background-color: #80E1E9;
+    color: #F5F5F5;
+    font-size: xx-large;
+    text-shadow: 0px 0px #000000;
+}
+
+
+/* Bordered form */
+form {
+    border: 100% groove #f1f1f1;
+	
+}
+
+/* Full-width inputs */
+input[type=text], input[type=password], input[type=number] {
+    padding: 12px 50px;
+    /*margin: 8px 0;*/
+    margin: 0 auto;
+    display: table-caption;
+    border: medium solid #ccc;
+    box-sizing: border-box;
+/* 	-webkit-box-shadow: -7px 10px 23px 3px #000000; 
+	box-shadow: -7px 10px 23px 3px #000000; */
+}
+
+/* Set a style for all buttons */
+button {
+    background-color: yellow;
+    color: darkblue;
+	font-weight: bold;
+    padding: 10px 85px;
+    /*margin: 8px 0;*/
+    margin: 0 auto;
+    border: none;
+    cursor: pointer;
+	
+	text-transform: uppercase;
+	list-style: 50px;
+	 font-size: 0.9em;
+/* 	-webkit-box-shadow: -7px 10px 23px 3px #000000; 
+	box-shadow: -7px 10px 23px 3px #000000; */
+}
+
+/* Add a hover effect for buttons */
+button:hover {
+    opacity: 0.8;
+}
+
+/* Extra style for the cancel button (red) */
+.cancelbtn {
+    background-color: #f44336;
+    color: darkblue;
+	font-weight: bold;
+    padding: 10px 85px;
+    /*margin: 8px 0;*/
+    margin: 0 auto;
+    border: none;
+    cursor: pointer;
+
+    
+	text-transform: uppercase;
+	 font-size: 0.9em;
+     list-style: 50px;
+     -webkit-box-shadow: -7px 10px 23px 3px #000000; 
+     box-shadow: -7px 10px 23px 3px #000000;
+}
+
+
+/* Add padding to containers */
+.container {
+    padding: 10px;
+    position: relative;
+}
+
+/* The "Forgot password" text */
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+    span.psw {
+        display:block;
+        float:none;
+    }
+    .cancelbtn {
+        width: 100%;
+    }
+}
+
+/* The side navigation menu */
+.sidenav {
+    position: absolute;
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top:auto; 
+    left: 0;
+    background-color:#FFCB05; 
+    overflow-x: hidden; /* Disable horizontal scroll */
+    overflow-y: hidden;
+    padding-top: 20px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: DarkBlue;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav p {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 22px;
+    color: DarkBlue;
+    display: block;
+    transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+    color:darkblue;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 36px;
+    margin-left: 50px;
+	color: darkblue;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+    transition: margin-left .5s;
+    padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+
+
+.alert {
+    padding: 20px;
+    background-color: #f44336;
+    color: white;
+    display: none;
+}
+
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn:hover {
+    color: black;
+}
+
+
+.Logoutbtn {
+    color: white;
+	font-weight: bold;
+    padding: 14px 25px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 12%;
+	text-transform:none;
+	 font-size: 15px;
+    background-color: transparent;
+}
+
+table, th, td {
+	display: block;
+    border: 0px solid #3D3939;
+}
+.messagetable{
+	border: 0.5px solid #3D3939;
+	display: inline-block;
+}
+ .inlineTable {
+    display: inline-block; 
+}
+
+.centerImage {
+    text-align:center;
+    display:block;
+}
+
+.carousel {
+    margin: 0 auto;
+    position: relative;
+    
+}
+
+.centerthis {
+    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    display: block;
+    text-align: center;
+    
+}

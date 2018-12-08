@@ -1,0 +1,107 @@
+<!doctype html>
+<script src='./js/jquery.min.js'></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src='./js/main.js'></script>
+<script src='./js/alerts.js'></script>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wolverine Connect: My Profile</title>
+<link href="./css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#100455">
+<div id="mySidenav" class="sidenav">
+    <div id="fullname"></div><a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="home.html">Home</a>
+    <a href="https://my.umflint.edu/" target="_blank">My UM-Flint</a>
+    <a href="map.html">Campus Map</a>
+    <a href="calendar.html">Calendar</a>
+    <div class='noguest' style='display: none'><a href="chatter.html">Chatter</a></div>
+    <div class='noguest' style='display: none'><a href="messages.html">Messages</a></div>
+    <a href="news.html">News</a>
+    <a href="securityalerts.html">Security Alerts</a>
+    <div class='noguest' style='display: none'><a href="profile.html">My Profile</a></div>
+    <br>
+    <a href="index.html">Logout</a>
+    <br>
+    <a href="tel:+18107623333"><img src="./img/sos.png" height="60" width="60"></a>
+  </div>
+  <div id="main">
+  <div class="alert" id='secalertbox'>
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+        <div id="secalerttitle"></div>
+  </div>
+  <br>
+  <span class = "mainheader" style="font-size:30px; cursor:pointer" onclick="toggleNav()">&#9776;</span>
+  <h1><img src="./img/logo.jpg" width="100" height="100" alt="">  Wolverine Connect</h1>
+  <h3>My Profile</h3>
+  <div id='accountinfo'></div>
+  <div id='accountsettings'>
+    <p class = "textcenter"><label for="cpsw"><b class="mainheader">Current Password:</b></label>
+    <p class = "textcenter"><input type="password" id="cpassword" placeholder="Enter Current Password" name="psw" required>
+    <p class = "textcenter"><label for="npsw1"><b class="mainheader">New Password:</b></label>
+    <p class = "textcenter"><input type="password" id="npassword1" placeholder="Enter New Password" name="psw" required>
+    <p class = "textcenter"><label for="npsw2"><b class="mainheader">Confirm New Password:</b></label>
+    <p class = "textcenter"><input type="password" id="npassword2" placeholder="Confirm New Password" name="psw" required>
+    <p class = "textcenter"><button type="submit" id="setnewpw">Submit</button>
+  </div>
+</div>
+<script>
+// ready
+$(document).ready(function() {
+  // write full name to sidenav
+  document.getElementById('fullname').innerHTML = "<p>" +sessionStorage.getItem('lifirstname') + " " + sessionStorage.getItem('lilastname') + "</p>";
+  // check permissions
+  permCheck();
+  // check username and look up info
+  var username = sessionStorage.getItem('liusername');
+  var ref = firebase.database().ref().child('users/');
+    ref.orderByChild("username").equalTo(username).on("child_added", function(snapshot) {
+    document.getElementById('accountinfo').innerHTML = "<p class='textcenter'>" + snapshot.child('namefirst').val() + " " + snapshot.child('namelast').val() + " (" + snapshot.child('username').val() + "@umflint.edu)<br>UMID: " + snapshot.child('umid').val() + "</p>";
+    // check for invalid usernames and disable fields
+    if (username == 'guest' || username == null){
+      document.getElementById('cpassword').disabled = true;
+      document.getElementById('npassword1').disabled = true;
+      document.getElementById('npassword2').disabled = true;
+      document.getElementById('setnewpw').disabled = true;
+    }
+  });
+});
+// set new password button on click
+$(document).on('click','#setnewpw',function(e){
+  // get username
+  var username = sessionStorage.getItem('liusername');
+  // set reference
+  var ref = firebase.database().ref().child('users/');
+  // lookup user
+    ref.orderByChild("username").equalTo(username).on("child_added", function(snapshot) {
+      // check old password
+      if (snapshot.child('password').val() == document.getElementById('cpassword').value){
+        // compare new password fields
+        if (document.getElementById('npassword1').value == document.getElementById('npassword2').value){
+          // get password, update account
+          var newpassword = document.getElementById('npassword1').value;
+          firebase.database().ref('users/' + username).update({
+            password: newpassword
+          });
+          alert('Settings saved.');
+          clearFields();
+        }
+        else {
+          alert('New passwords do not match. Please try again.');
+        }
+      }
+      else {
+        alert('Current password is incorrect. Please try again.')
+      }
+  });
+});
+// clear text fields
+function clearFields() {
+  document.getElementById('cpassword').value = "";
+  document.getElementById('npassword1').value = "";
+  document.getElementById('npassword2').value = "";
+}
+</script>	
+</body>
+</html>

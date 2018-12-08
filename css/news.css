@@ -1,0 +1,63 @@
+div.messageTable {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  border: 7px solid #BFC4C9;
+  background-color: #F2F9FF;
+  width: 80%;
+  text-align: left;
+  border-collapse: collapse;
+}
+.divTable.messageTable .divTableCell, .divTable.messageTable .divTableHead {
+  border: 5px solid #BFC4C9;
+  padding: 5px 10px;
+}
+.divTable.messageTable .divTableBody .divTableCell {
+  font-size: 14px;
+  color: #333333;
+}
+.divTable.messageTable .divTableRow:nth-child(even) {
+  background: #D0E4F5;
+}
+.divTable.messageTable .divTableHeading {
+  background: #DBAE04;
+  background: -moz-linear-gradient(top, #e4c243 0%, #deb61d 66%, #DBAE04 100%);
+  background: -webkit-linear-gradient(top, #e4c243 0%, #deb61d 66%, #DBAE04 100%);
+  background: linear-gradient(to bottom, #e4c243 0%, #deb61d 66%, #DBAE04 100%);
+  border-bottom: 2px solid #444444;
+}
+.divTable.messageTable .divTableHeading .divTableHead {
+  font-size: 15px;
+  font-weight: bold;
+  color: #FFFFFF;
+  border-left: 2px solid #D0E4F5;
+}
+.divTable.messageTable .divTableHeading .divTableHead:first-child {
+  border-left: none;
+}
+
+.messageTable .tableFootStyle {
+  font-size: 14px;
+}
+.messageTable .tableFootStyle .links {
+	 text-align: right;
+}
+.messageTable .tableFootStyle .links a{
+  display: inline-block;
+  background: #1C6EA4;
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+.messageTable.outerTableFooter {
+  border-top: none;
+}
+.messageTable.outerTableFooter .tableFootStyle {
+  padding: 3px 5px; 
+}
+/* DivTable.com */
+.divTable{ display: table; text-align: center; margin: 0 auto; }
+.divTableRow { display: table-row; }
+.divTableHeading { display: table-header-group;}
+.divTableCell, .divTableHead { display: table-cell;}
+.divTableHeading { display: table-header-group;}
+.divTableFoot { display: table-footer-group;}
+.divTableBody { display: table-row-group;}

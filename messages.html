@@ -1,0 +1,215 @@
+<!doctype html>
+<script src="./js/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src="./js/main.js"></script>
+<script src='./js/alerts.js'></script>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wolverine Connect: Messages</title>
+<link href="./css/main.css" rel="stylesheet" type="text/css">
+<link href="./css/messages.css" rel="stylesheet" type="text/css">
+<link href="./css/messagesb.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#100455">
+    <div id="mySidenav" class="sidenav">
+        <div id="fullname"></div><a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="home.html">Home</a>
+        <a href="https://my.umflint.edu/" target="_blank">My UM-Flint</a>
+        <a href="map.html">Campus Map</a>
+        <a href="calendar.html">Calendar</a>
+        <div class='noguest' style='display: none'><a href="chatter.html">Chatter</a></div>
+        <div class='noguest' style='display: none'><a href="messages.html">Messages</a></div>
+        <a href="news.html">News</a>
+        <a href="securityalerts.html">Security Alerts</a>
+        <div class='noguest' style='display: none'><a href="profile.html">My Profile</a></div>
+        <br>
+        <a href="index.html">Logout</a>
+        <br>
+        <a href="tel:+18107623333"><img src="./img/sos.png" height="60" width="60"></a>
+      </div>
+      <div id="main">
+        <div class="alert" id='secalertbox'>
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+        <div id="secalerttitle"></div>
+        </div>
+      <br>
+      <span class = "mainheader" style="font-size:30px; cursor:pointer" onclick="toggleNav()">&#9776;</span>
+      <h1><img src="./img/logo.jpg" width="100" height="100" alt="">  Wolverine Connect</h1>
+      <h3>Messages</h3>
+      <table class="messagetable" id="mUserTable" height="500px" width="300px" style="margin: 0 auto">
+        <tr>
+          <td><p class = "textcenter"><button type="submit" id="mNewMsg">New Message</button></td>
+        </tr>
+        <p id="mUserList"></p>
+      </table>
+      <table class="messagetable" id="mDialogTable" height ="500px" width="430px" style="margin: 0 auto">
+        <tr>
+          <td><p class = "sender"> <label for="mRecipient"><b class="mainheader"></b></label>
+            <input type="text"  id="mRecipient" placeholder="Enter Recipient" style="width: 90%; float: left" name="mRecipient" required>
+          </td>
+			    <td class="mdialogScroll" height="300px" width="420px" style="vertical-align: bottom"><div class="mdialog" id="mDialogArea" style="vertical-align: bottom"></div></td>
+			    <td>
+            <p class="textright"><input type="text" id="mNewMessageBody" style="width: 90%; float: left" placeholder="Enter Message" name="mNewMessageBody" required><br><br><br>
+            <button class="button" type="submit" id="mNewMsgSubmit" style="width: 90%; float: left">Send</button>
+          </td>
+	      </tr>
+      </table>
+      <br>
+      <button id = "viewList"> View List</button><br>
+      <p id = "userList" style="display: none"></p>
+  </div>
+<script>
+// define vars
+var username;
+var firstname;
+var lastname;
+var increment = 1;
+var selectedRecip;
+// ready
+$(document).ready(function(e){
+    // write full name to sidenav
+    document.getElementById('fullname').innerHTML = "<p>" +sessionStorage.getItem('lifirstname') + " " + sessionStorage.getItem('lilastname') + "</p>";
+    // check permissions
+    permCheck();
+    // get fields
+    username = sessionStorage.getItem('liusername');
+    firstname = sessionStorage.getItem('lifirstname');
+    lastname = sessionStorage.getItem('lilastname');
+    // query list of users with previous messages
+    var messageListRef = firebase.database().ref('users/' + username + '/messages/').orderByKey();
+    messageListRef.on('child_added', function(data) {
+        //populate user list
+        var table = document.getElementById('mUserTable');
+        var row = table.insertRow(increment);
+        var cell1 = row.insertCell(0);
+        cell1.innerHTML = "<button type='submit' id='genericUser' style='width: 100%'>" + data.key + "</button><br>";
+        increment++;
+    })
+    // query list of registered users for directory
+    var userMsg = firebase.database().ref('users').orderByKey();
+    userMsg.on('child_added', function(data){
+        htmlInsert = data.child('namefirst').val() + " " + data.child('namelast').val() + " (" + data.key + ")<br>";
+        document.getElementById('userList').insertAdjacentHTML ('beforeend', htmlInsert);
+      });
+});
+// click: submit (new message)
+$(document).on('click','#mNewMsgSubmit',function(e){
+  // get fields
+  var recip = document.getElementById('mRecipient').value;
+  var msg = document.getElementById('mNewMessageBody').value;
+  // check if recipient exists
+  firebase.database().ref(`users/${recip}`).once("value", snapshot => {
+    if (snapshot.exists()){
+      console.log('exists');
+      // set references
+        var selfref = firebase.database().ref().child('users/' + username + '/messages/' + recip + '/' + getCurrentDateTime());
+        var recipref = firebase.database().ref().child('users/' + recip + '/messages/' + username + '/' + getCurrentDateTime());
+        // set data
+        selfref.set({
+          sender: username,
+          recipient: recip,
+          timedate: getCurrentDateTime(),
+          message: msg,
+          status: 'unread'
+        })
+        recipref.set({
+          sender: username,
+          recipient: recip,
+          timedate: getCurrentDateTime(),
+          message: msg,
+          status: 'unread'
+        })
+       }
+       else {
+         console.log('DNE');
+         alert('Error: Recipient not found.');
+       }
+   });
+});
+// click: recipient button (generated)
+$(document).on('click','#genericUser',function(e){
+  selectedRecip = $(this).text();
+ while(document.getElementById('msg-datetime') !=null)
+	document.getElementById('msg-datetime').remove();
+while(document.getElementById('msg-name') !=null)
+	document.getElementById('msg-name').remove();
+while(document.getElementById('msg-body') !=null)
+	document.getElementById('msg-body').remove();
+  changeView($(this).text());
+})
+// click: recipient button (change recipient)
+function changeView(strName) {
+  // clear fields
+  clearMsg();
+  // get messages between users
+  var userRef = firebase.database().ref('users/' + username + '/messages/' + strName + '/').orderByKey().limitToLast(200);
+  userRef.on('child_added', function(data) {
+    // define var
+    htmlInsert="";
+    // changes output table depending on who the sender is (for left-right align)
+    if(strName == data.child("sender").val()){
+          
+              htmlInsert = "<div class='divTable messageTableSender'><div class='divTableHeading'><div class='divTableRow'><div class='divTableHead'>" + data.child("sender").val() + " - " + data.child("timedate").val() + "</div></div></div><div class='divTableBody'><div class='divTableRow'><div class='divTableCell'>" + data.child("message").val() + "</div></div></div></div>"
+    }else{
+              htmlInsert = "<div class='divTable messageTableRecipient'><div class='divTableHeading'><div class='divTableRow'><div class='divTableHead'>" + data.child("sender").val() + " - " + data.child("timedate").val() + "</div></div></div><div class='divTableBody'><div class='divTableRow'><div class='divTableCell'>" + data.child("message").val() + "</div></div></div></div>"
+    }
+	document.getElementById('mRecipient').value = strName;
+	document.getElementById('mRecipient').disabled = true;
+	document.getElementById('mDialogArea').insertAdjacentHTML ('beforeend', htmlInsert);
+  console.log("ss"+JSON.stringify(htmlInsert));
+	});
+}
+// click: send message button
+$(document).on('click','#genMsgSubmit',function(e){
+  // get fields/vars and save info to each users (sender, recipient) table for shallow search
+  var message = document.getElementById('genMessageBody').value;
+  var sender = username;
+  var recipient = selectedRecip;
+  var selfref = firebase.database().ref().child('users/' + username + '/messages/' + recipient + '/' + getCurrentDateTime());
+  var recipref = firebase.database().ref().child('users/' + recipient + '/messages/' + username + '/' + getCurrentDateTime());
+    selfref.set({
+      sender: sender,
+      recipient: recipient,
+      timedate: getCurrentDateTime(),
+      message: message,
+      status: 'unread'
+    })
+    recipref.set({
+      sender: sender,
+      recipient: recipient,
+      timedate: getCurrentDateTime(),
+      message: message,
+      status: 'unread'
+    })
+    document.getElementById('genMessageBody').value = "";
+})
+// click: 'new message' button: enables text field, clears items
+$(document).on('click','#mNewMsg',function(e){
+	document.getElementById('mRecipient').disabled = false;
+ 	document.getElementById('mRecipient').value = "";
+	document.getElementById('mNewMessageBody').value = "";
+while(document.getElementById('msg-datetime') !=null)
+	document.getElementById('msg-datetime').remove();
+while(document.getElementById('msg-name') !=null)
+	document.getElementById('msg-name').remove();
+while(document.getElementById('msg-body') !=null)
+  document.getElementById('msg-body').remove();
+  clearMsg();
+  document.getElementById("mRecipient").focus()
+})
+// function to clear chatbox (for view change)
+function clearMsg() {
+  document.getElementById('mDialogArea').innerHTML = " ";
+}
+// function to show/hide directory
+$(document).on('click','#viewList', function(e){
+   if (document.getElementById('userList').style.display == "block") {
+     console.log('block-none');
+       document.getElementById('userList').style.display = "none"}
+   else {document.getElementById('userList').style.display = "block";
+     console.log('none-block');}
+});
+</script>		
+</body>
+</html>

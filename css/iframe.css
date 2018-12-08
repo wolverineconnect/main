@@ -1,0 +1,20 @@
+#loading {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  iframe {
+    display: block;       /* iframes are inline by default */
+    background: #FFF;
+    border: none;         /* Reset default border */
+    height: 50em;        /* Viewport-relative units 115vh 70vw */
+    width: 90%;
+    line-height: 0;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+    float: center;
+    text-align: center;
+}

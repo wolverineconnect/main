@@ -1,0 +1,147 @@
+<!doctype html>
+<script src="./js/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src="./js/main.js"></script>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Administrative Panel</title>
+    <link href="./css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#100455">
+    <div class="container" >
+        <p class = "textcenter"> <label for="uname"> <b class="mainheader">Username</b></label>
+        <p class = "textcenter"> <input type="text" id="username" placeholder="Enter Username" name="uname" required>
+     
+        <p class = "textcenter"> <label for="psw"><b class="mainheader">Password</b></label>
+        <p class = "textcenter"><input type="password" id="password" placeholder="Enter Password" name="psw" required>
+
+        <p class = "textcenter"> <label for="umid"><b class="mainheader">UMID</b></label>
+        <p class = "textcenter"><input type="text" id="umid" placeholder="Enter UMID" name="umid" required>            
+
+        <p class = "textcenter"> <label for="namefirst"><b class="mainheader">First Name</b></label>
+        <p class = "textcenter"><input type="text" id="namefirst" placeholder="Enter First Name" name="namefirst" required>
+
+        <p class = "textcenter"> <label for="namelast"><b class="mainheader">Last Name</b></label>
+        <p class = "textcenter"><input type="text" id="namelast" placeholder="Enter Last Name" name="namelast" required>
+
+        <p class = "textcenter"> <label for="type"><b class="mainheader">Account Type (admin, student, faculty...)</b></label>
+        <p class = "textcenter"><input type="text" id="type" placeholder="Enter Account Type" name="type" required>
+
+        <p class = "textcenter"> <label for="enabled"><b class="mainheader">Enable/Disable Account</b></label>
+        <p class = "textcenter"><input type="text" id="enabled" placeholder="Enabled=1, Disabled=0" name="enabled" required>
+        
+        <p class = "textcenter"><button type="submit" id="input">Submit</button>
+        <p class = "textcenter"><button type="button" class="cancelbtn" id="get">Lookup</button>
+            
+        <label class="bodytext"></label>
+</div>
+
+<div class='container'>
+    <p class = "textcenter"> <label for="type"><b class="mainheader">Alert Title</b></label>
+      <p class = "textcenter"><input type="text" id="sectitle" placeholder="Enter Account Type" name="type" required>
+
+      <p class = "textcenter"> <label for="enabled"><b class="mainheader">Alert Description</b></label>
+      <p class = "textcenter"><input type="text" id="secdescription" placeholder="Enter Description" name="enabled" required>
+      
+      <p class = "textcenter"><button type="submit" id="secinput">Submit</button>
+      <p class = "textcenter"><button type="submit" id="secdisable">Disable Alert</button>
+</div>
+
+<div class='container'>
+    <p class = "textcenter"> <label for="type"><b class="mainheader">News Title</b></label>
+      <p class = "textcenter"><input type="text" id="newstitle" placeholder="Enter Title" name="type" required>
+
+      <p class = "textcenter"> <label for="enabled"><b class="mainheader">News Description</b></label>
+      <p class = "textcenter"><input type="text" id="newsdescription" placeholder="Enter Description" name="enabled" required>
+      
+      <p class = "textcenter"><button type="submit" id="newsinput">Submit</button>
+</div>
+
+<script>
+$(document).on('click','#input',function(e){
+
+  var username = document.getElementById('username').value;
+  var pword = document.getElementById('password').value;
+  var umid = document.getElementById('umid').value;
+  var namefirst = document.getElementById('namefirst').value;
+  var namelast = document.getElementById('namelast').value;
+  var type = document.getElementById('type').value;
+  var enabled = document.getElementById('enabled').value;
+
+  firebase.database().ref('users/' + username).set({
+    username: username,
+    password: pword,
+    umid: umid,
+    namefirst: namefirst,
+    namelast: namelast,
+    type: type,
+    enabled: enabled});
+});
+
+$(document).on('click','#get',function(e){
+  var username = document.getElementById('username').value;
+  
+  var ref = firebase.database().ref().child('users/');
+    ref.orderByChild("username").equalTo(username).on("child_added", function(snapshot) {
+      console.log(snapshot.key);
+      alert(JSON.stringify(snapshot));
+  });
+});
+
+function pushNews() {
+    var currentdate = new Date();
+    var datetime = currentdate.getFullYear() + "-"
+                  + (currentdate.getMonth()+1)  + "-" 
+                  + currentdate.getDate() + "-"  
+                  + addZero(currentdate.getHours()) + ":"  
+                  + addZero(currentdate.getMinutes()) + ":" 
+                  + addZero(currentdate.getSeconds());
+  firebase.database().ref('news/' + datetime).set({
+    date: currentdate.getFullYear() + "-" + (currentdate.getMonth()+1)  + "-" + currentdate.getDate(),
+    time: addZero(currentdate.getHours()) + ":" + addZero(currentdate.getMinutes()) + ":" + addZero(currentdate.getSeconds()),
+    title: document.getElementById('newstitle').value,
+    description: document.getElementById('newsdescription').value,
+  });
+  };
+
+  function pushAlert() {
+    var currentdate = new Date();
+    var datetime = currentdate.getFullYear() + "-"
+                  + (currentdate.getMonth()+1)  + "-" 
+                  + currentdate.getDate() + "-"  
+                  + addZero(currentdate.getHours()) + ":"  
+                  + addZero(currentdate.getMinutes()) + ":" 
+                  + addZero(currentdate.getSeconds());
+  firebase.database().ref('security/' + datetime).set({
+    date: currentdate.getFullYear() + "-" + (currentdate.getMonth()+1)  + "-" + currentdate.getDate(),
+    time: addZero(currentdate.getHours()) + ":" + addZero(currentdate.getMinutes()) + ":" + addZero(currentdate.getSeconds()),
+    title: document.getElementById('sectitle').value,
+    description: document.getElementById('secdescription').value,
+    status: "Enabled",
+  });
+  };
+
+  function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+  }
+
+$(document).on('click','#secinput',function(e){pushAlert()});
+$(document).on('click','#secdisable',function(e){
+  var recentPostsRef = firebase.database().ref('security/').orderByKey().limitToLast(1);
+  recentPostsRef.on('child_added', function(data) {
+    //alert(JSON.stringify(data.key));
+    firebase.database().ref('security/' + data.key).update({
+        status: "Disabled",});
+    });
+});
+
+$(document).on('click','#newsinput',function(e){pushNews()});
+
+</script>
+</body>
+</html>
